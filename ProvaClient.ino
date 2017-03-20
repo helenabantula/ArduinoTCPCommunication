@@ -3,25 +3,24 @@
 #include <TimeLib.h>
 
 
+EthernetClient client;
 byte mac[] = {0x90, 0xA2, 0xDA, 0x10, 0xCB, 0x2D};
-char readedData;
 IPAddress ip(192, 168, 1, 177);
 IPAddress server(192, 168, 1, 120);
 unsigned int  serverPort = 11999;
 
-EthernetClient client;
+
 bool persona = false;
+pinMode(9, OUTPUT);
 
 volatile unsigned int timeCount=0;
+
 
 ISR(TIMER1_COMPA_vect){ //Ep, he arribat a 40, incremento una variable
   timeCount++;
 }
 
-
 void setup() {
-
-  pinMode(9, OUTPUT);
   
   Ethernet.begin(mac, ip);
   
@@ -44,15 +43,15 @@ void setup() {
 
   delay(1000);
 
-  Serial.println("connecting...");
+  Serial.println("Connecting...");
 
   if (client.connect(server, serverPort)) {
-    Serial.println("connected");
-
+    Serial.println("Connected");
   } else {
-    Serial.println("connection failed");
+    Serial.println("Connection failed");
   }
 }
+
 
 void loop() {
   if (!client.connected()){
@@ -74,14 +73,11 @@ void loop() {
     String ID = "R";
 
     if(persona){
-      char readedData = client.read();
-
-      if (readedData =='A'){
-          digitalWrite(9, HIGH);
-            }
-      else{
+       char readedData = client.read();
+      if (readedData =='A')
+          digitalWrite(9, HIGH);     
+      else
           digitalWrite(9, LOW);
-      }
     }
 
     
